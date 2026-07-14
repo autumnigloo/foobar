@@ -1,5 +1,5 @@
-"""Grow a corridor from our nearest square toward the nearest flag we
-don't own. Flags give extra points while held."""
+"""Grow a corridor from our nearest tile toward the nearest flag we
+don't hold. Flags pay out their pot while held."""
 
 from ..models import Flag, Point
 from ..world import World
@@ -12,7 +12,7 @@ class ExpandToFlag(Strategy):
         return self.config.weight_expand_to_flag
 
     def propose(self, world: World) -> Action | None:
-        flags = world.unowned_target_flags()
+        flags = world.target_flags()
         frontier = world.frontier()
         if not flags or not frontier:
             return None
@@ -33,5 +33,5 @@ class ExpandToFlag(Strategy):
         return Action(
             kind=ActionKind.PLACE,
             target=target,
-            reason=f"advance toward flag at ({flag.pos.x}, {flag.pos.y})",
+            reason=f"advance toward flag {flag.flag_id} at ({flag.pos.x}, {flag.pos.y})",
         )
